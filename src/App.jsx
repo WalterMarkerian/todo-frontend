@@ -6,17 +6,15 @@ function App() {
   const [title, setTitle] = useState("");
   const API_URL = "http://192.168.1.23:8090/api/v1/todos";
 
-  useEffect(() => {
-    fetchTodos();
-  }, []);
+  useEffect(() => { fetchTodos(); }, []);
 
   const fetchTodos = async () => {
     try {
       const response = await axios.get(API_URL);
-      // OJO: Accedemos a .content porque la API devuelve un objeto Page de Spring
-      setTodos(response.data.content || []); 
+      // Spring Pageable devuelve la lista en 'content'
+      setTodos(response.data.content || []);
     } catch (error) {
-      console.error("Error al obtener tareas:", error);
+      console.error("Error GET:", error);
     }
   };
 
@@ -25,44 +23,44 @@ function App() {
     if (!title.trim()) return;
 
     try {
-      // El objeto debe coincidir con los campos de tu TodoDto en Java
+      // El nombre del campo 'title' debe ser igual al del TodoDto.java
       await axios.post(API_URL, {
         title: title,
         completed: false
+      }, {
+        headers: { 'Content-Type': 'application/json' }
       });
       setTitle("");
       fetchTodos();
     } catch (error) {
-      console.error("Error al añadir tarea:", error);
-      alert("Error 500: Revisá que los nombres de los campos en el DTO de Java sean iguales a estos.");
+      // Si entra acá con 500, el log de la API en Ubuntu dirá la razón exacta
+      console.error("Error POST 500:", error.response?.data);
+      alert("Error 500 en el servidor. Revisá los logs de Docker.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Todo App - Prod</h1>
-        <form onSubmit={handleAddTodo} className="flex gap-2 mb-6">
+    <div className="min-h-screen bg-slate-100 p-8 flex justify-center">
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+        <h1 className="text-2xl font-bold mb-4">Todo List Prod</h1>
+        <form onSubmit={handleAddTodo} className="flex gap-2 mb-4">
           <input 
-            type="text" 
-            className="flex-1 border rounded p-2 outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border p-2 rounded"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Nueva tarea..."
+            placeholder="¿Qué sigue?"
           />
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Añadir</button>
+          <button className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
         </form>
-        <ul className="space-y-2">
-          {todos.map(todo => (
-            <li key={todo.id} className="p-3 bg-gray-50 rounded border flex justify-between items-center">
-              <span>{todo.title}</span>
-              <span className="text-xs font-mono text-gray-400">ID: {todo.id}</span>
-            </li>
+        <div className="space-y-2">
+          {todos.map(t => (
+            <div key={t.id} className="p-3 bg-slate-50 border rounded flex justify-between">
+              {t.title}
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
-  )
+  );
 }
-
-export default App
+export default App;
