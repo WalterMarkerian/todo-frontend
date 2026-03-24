@@ -3,14 +3,14 @@ pipeline {
 
     environment {
         // Nombre de tu imagen en Docker Hub o local
-        DOCKER_IMAGE = "retlaw/todo-frontend"
+        DOCKER_IMAGE = "todo-frontend"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 // Descarga el código de GitHub
-                git branch: 'main', url: 'https://github.com/TU_USUARIO/todo-frontend.git'
+                git branch: 'main', url: 'https://github.com/WalterMarkerian/todo-frontend.git'
             }
         }
 
