@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "todo-frontend"
-        // Definimos la URL de producción aquí centralizada
-        PROD_API_URL = "http://192.168.1.23:8090/api/v1"
+        // La nueva URL pública. El /api lo rutea el Nginx al backend
+        PROD_API_URL = "https://makeserver.tailc624bd.ts.net/api"
     }
 
     stages {
@@ -16,7 +16,6 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // PASAMOS LA VARIABLE COMO BUILD-ARG
                 sh """
                     docker build \
                     --build-arg VITE_API_URL=${env.PROD_API_URL} \
@@ -27,13 +26,14 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
+                // Frenamos y quitamos el viejo
                 sh "docker stop todo-frontend || true && docker rm todo-frontend || true"
                 
-                // Mantenemos tu red todo-network para que se vea con el backend
+                // IMPORTANTE: Ya no necesitamos exponer el puerto 3000 al exterior ( -p 3000:80 )
+                // porque ahora Nginx (puerto 80) hablará internamente con este contenedor.
                 sh """
                     docker run -d \
                     --name todo-frontend \
-                    -p 3000:80 \
                     --network todo-network \
                     ${DOCKER_IMAGE}:latest
                 """
@@ -43,10 +43,9 @@ pipeline {
 
     post {
         success {
-            echo "¡Frontend desplegado con éxito en http://192.168.1.23:3000!"
+            echo "¡Frontend desplegado con éxito en ${env.PROD_API_URL.replace('/api', '')}!"
         }
         always {
-            // Limpieza de imágenes huérfanas para no llenar el disco del servidor
             sh 'docker image prune -f'
         }
     }
