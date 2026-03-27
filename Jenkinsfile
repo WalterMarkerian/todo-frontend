@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "todo-frontend"
         // Definimos la URL de producción aquí centralizada
-        PROD_API_URL = "http://192.168.1.23:8090/api/v1/todos"
+        PROD_API_URL = "http://192.168.1.23:8090/api/v1"
     }
 
     stages {
