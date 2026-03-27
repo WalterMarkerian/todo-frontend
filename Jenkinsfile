@@ -16,12 +16,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // Pasamos la URL de la API durante el build (importante para Vite/React)
-                sh """
-                    docker build \
-                    --build-arg VITE_API_URL=${env.PROD_API_URL} \
-                    -t ${DOCKER_IMAGE}:latest .
-                """
+                // Usamos comillas dobles para que Jenkins resuelva la variable, 
+                // pero envolvemos el valor en comillas simples para el comando de Docker
+                sh "docker build --build-arg VITE_API_URL='${env.PROD_API_URL}' -t ${DOCKER_IMAGE}:latest ."
             }
         }
 
