@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "todo-frontend"
         // Corregimos la URL para que apunte al puerto que expusimos en Tailscale (8443)
-        PROD_API_URL = "https://makeserver.tailc624bd.ts.net:8443/api/v1"
+        PROD_API_URL = "/api/v1"
     }
 
     stages {
