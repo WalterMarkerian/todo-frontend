@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+console.log("Mi URL de API es:", import.meta.env.VITE_API_URL);
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://192.168.1.23:8090/api/v1',
 });
