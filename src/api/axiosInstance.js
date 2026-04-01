@@ -13,7 +13,6 @@ const finalBaseURL = (envApiUrl && envApiUrl.startsWith('http'))
     ? envApiUrl 
     : DEFAULT_API_URL;
 
-console.log("Configurando Axios con baseURL:", finalBaseURL);
 
 const axiosInstance = axios.create({
   baseURL: finalBaseURL,
