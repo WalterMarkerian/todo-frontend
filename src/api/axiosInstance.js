@@ -1,38 +1,41 @@
 import axios from 'axios';
 
-// 1. Definimos el fallback (IP de tu servidor backend)
-const DEFAULT_API_URL = 'http://192.168.1.23:8090/api/v1';
+const getBaseURL = () => {
+    // 1. Prioridad: Variable de entorno (para producción real o Docker Compose)
+    const envApiUrl = import.meta.env.VITE_API_URL;
+    if (envApiUrl && envApiUrl.startsWith('http')) {
+        return envApiUrl;
+    }
 
-// 2. Obtenemos la URL de Vite
-const envApiUrl = import.meta.env.VITE_API_URL;
+    // 2. Magia Dinámica: Usa la IP o Dominio desde donde el usuario entró
+    if (typeof window !== 'undefined') {
+        const hostname = window.location.hostname; 
+        // Si entras por 192.168.1.23:3000 -> llama a 192.168.1.23:8090
+        // Si entras por 100.64.0.15:3000 -> llama a 100.64.0.15:8090
+        // Si entras por localhost:3000 -> llama a localhost:8090
+        return `http://${hostname}:8090/api/v1`;
+    }
 
-// 3. Lógica de validación: 
-// Si la variable de entorno empieza con "/", es una ruta relativa y causará el 404 en el puerto 3000.
-// Solo usamos la variable de entorno si es una URL completa (empieza con http).
-const finalBaseURL = (envApiUrl && envApiUrl.startsWith('http')) 
-    ? envApiUrl 
-    : DEFAULT_API_URL;
-
+    // 3. Último recurso (solo si falla todo lo anterior)
+    return '/api/v1'; 
+};
 
 const axiosInstance = axios.create({
-  baseURL: finalBaseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  }
+    baseURL: getBaseURL(),
+    headers: {
+        'Content-Type': 'application/json',
+    }
 });
 
-// Interceptor: Antes de cada petición, busca el token y lo pega en el Header
-axiosInstance.interceptors.request.use(
-  (config) => {
+console.log("🌐 API conectada a:", axiosInstance.defaults.baseURL);
+
+// Interceptor para el Token
+axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+});
 
 export default axiosInstance;
