@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8090/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'http://192.168.1.23:8090/api/v1',
 });
 
 // Interceptor: Antes de cada petición, busca el token y lo pega en el Header
