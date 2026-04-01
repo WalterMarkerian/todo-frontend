@@ -10,10 +10,10 @@ const getBaseURL = () => {
     // 2. Magia Dinámica: Usa la IP o Dominio desde donde el usuario entró
     if (typeof window !== 'undefined') {
         const hostname = window.location.hostname; 
-        // Si entras por 192.168.1.23:3000 -> llama a 192.168.1.23:8090
-        // Si entras por 100.64.0.15:3000 -> llama a 100.64.0.15:8090
-        // Si entras por localhost:3000 -> llama a localhost:8090
-        return `http://${hostname}:8090/api/v1`;
+        // Si entras por 192.168.1.23:3000 -> llama a 192.168.1.23
+        // Si entras por 100.64.0.15:3000 -> llama a 100.64.0.15
+        // Si entras por localhost:3000 -> llama a localhost
+        return `http://${hostname}/api/v1`;
     }
 
     // 3. Último recurso (solo si falla todo lo anterior)
