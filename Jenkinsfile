@@ -6,7 +6,8 @@ pipeline {
         DOCKER_NETWORK = "web_network" // Usamos la red global del Proxy
         
         // La URL donde vive tu Frontend
-        VIRTUAL_HOST = "todo.makeserver.tailc624bd.ts.net"
+        VIRTUAL_HOST = "makeserver.tailc624bd.ts.net"
+        VIRTUAL_PORT = 80
         
         // La URL de tu API (Backend) para que el Frontend la consuma
         PROD_API_URL = "https://todo-api.makeserver.tailc624bd.ts.net" 
