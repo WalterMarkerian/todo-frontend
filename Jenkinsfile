@@ -7,7 +7,7 @@ pipeline {
         
         // La URL donde vive tu Frontend
         VIRTUAL_HOST = "makeserver.tailc624bd.ts.net"
-        VIRTUAL_PORT = 80
+        VIRTUAL_PATH = "/"
         
         // La URL de tu API (Backend) para que el Frontend la consuma
         PROD_API_URL = "https://todo-api.makeserver.tailc624bd.ts.net" 
