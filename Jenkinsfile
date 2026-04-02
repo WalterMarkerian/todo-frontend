@@ -13,7 +13,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 // Pasamos la URL de la API como argumento de construcción
-                sh "docker build --build-arg VITE_API_URL=${PROD_API_URL} -t ${DOCKER_IMAGE}:latest ."
+                sh "docker build --build-arg VITE_API_URL=${env.PROD_API_URL} -t ${DOCKER_IMAGE}:latest ."
             }
         }
 
