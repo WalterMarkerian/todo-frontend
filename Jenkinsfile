@@ -3,17 +3,20 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "todo-frontend-prod"
-        DOCKER_NETWORK = "todo-network"
-        // Si usas dominio real, ponlo aquí. Si usas Tailscale, déjalo vacío 
-        // para que tu JS detecte la IP del servidor automáticamente.
-        PROD_API_URL = "" 
+        DOCKER_NETWORK = "web_network" // Usamos la red global del Proxy
+        
+        // La URL donde vive tu Frontend
+        VIRTUAL_HOST = "todo.makeserver.tailc624bd.ts.net"
+        
+        // La URL de tu API (Backend) para que el Frontend la consuma
+        PROD_API_URL = "https://todo-api.makeserver.tailc624bd.ts.net" 
     }
 
     stages {
         stage('Build Frontend') {
             steps {
-                // Pasamos la URL de la API como argumento de construcción
-                sh "docker build --build-arg VITE_API_URL=${env.PROD_API_URL} -t ${DOCKER_IMAGE}:latest ."
+                // Pasamos la URL de la API como argumento para que se inyecte en el JS
+                sh "docker build --build-arg VITE_API_URL=${PROD_API_URL} -t ${DOCKER_IMAGE}:latest ."
             }
         }
 
@@ -26,7 +29,8 @@ pipeline {
                     --name todo-frontend-prod \
                     --network ${DOCKER_NETWORK} \
                     --restart unless-stopped \
-                    -p 3000:80 \
+                    -e VIRTUAL_HOST=${VIRTUAL_HOST} \
+                    -e VIRTUAL_PORT=80 \
                     ${DOCKER_IMAGE}:latest
                 """
             }
@@ -34,7 +38,7 @@ pipeline {
     }
 
     post {
-        success { echo "🚀 Frontend de Producción desplegado en puerto 3000" }
+        success { echo "🚀 Frontend desplegado en https://${VIRTUAL_HOST}" }
         always { sh "docker image prune -f" }
     }
 }
