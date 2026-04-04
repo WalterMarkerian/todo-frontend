@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "todo-frontend-prod"
-        CONTAINER_NAME = "todo-frontend-prod"
+        DOCKER_IMAGE = "todo-frontend"
+        CONTAINER_NAME = "todo-frontend"
         DOCKER_NETWORK = "web_network"
         // Usamos el path base de tu API
         PROD_API_URL = "/api/v1" 
