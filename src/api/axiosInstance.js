@@ -1,11 +1,10 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    // Vite reemplaza esto en tiempo de compilación
+// Si VITE_API_URL es "/api/v1", Axios lo pegará al dominio de ngrok automáticamente
     baseURL: import.meta.env.VITE_API_URL || '/api/v1',
     headers: {
         'Content-Type': 'application/json',
-        // ESTO ES LO QUE NECESITÁS PARA NGROK:
         'ngrok-skip-browser-warning': 'true'
     }
 });
