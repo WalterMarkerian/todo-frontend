@@ -12,7 +12,7 @@ pipeline {
         CONTAINER_NAME = "todo-frontend"
         DOCKER_NETWORK = "web_network"
         // Esta URL debe coincidir con lo que configuramos en Nginx (/api/)
-        PROD_API_URL   = "/api" 
+        PROD_API_URL   = "/api/v1" 
         IMAGE_TAG      = "${DOCKER_IMAGE}:${BUILD_NUMBER}"
     }
 
